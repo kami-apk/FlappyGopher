@@ -10,10 +10,13 @@ class MainThread(surfaceHolder : SurfaceHolder , gameManager : GameManager) : Th
     private var surfaceHolder = surfaceHolder
     private var gameManager = gameManager
 
+
     private  var running : Boolean = false
     private var canvas : Canvas? = Canvas()
 
     private val targetFPS : Int = 60
+
+    private var flag = false
 
     override fun run() {
         var startTime : Long = 0L
@@ -26,7 +29,6 @@ class MainThread(surfaceHolder : SurfaceHolder , gameManager : GameManager) : Th
             canvas = null
 
             try {
-
                 canvas = surfaceHolder.lockCanvas()
                 //surfaceHolderで排他制御
                 synchronized(surfaceHolder){
@@ -35,14 +37,12 @@ class MainThread(surfaceHolder : SurfaceHolder , gameManager : GameManager) : Th
                 }
 
             } catch( e: Exception){
-
                 e.printStackTrace()
 
             } finally{// 最後にかならず実行
 
                 if( canvas != null){
                     try {
-                        //lockを外す
                         surfaceHolder.unlockCanvasAndPost(canvas)
                     } catch( e: Exception){
                         e.printStackTrace()
@@ -65,12 +65,8 @@ class MainThread(surfaceHolder : SurfaceHolder , gameManager : GameManager) : Th
 
         }
 
-
-
-
-
-
     }
+
 
     fun setRunning(isRunning : Boolean) {
         running = isRunning

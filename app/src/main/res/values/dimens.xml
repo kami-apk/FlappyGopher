@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="gopher_X">5dp</dimen>
+    <dimen name="gopher_Y">5dp</dimen>
+    <dimen name="gopher_height">45dp</dimen>
+    <dimen name="gopher_width">61dp</dimen>
+
+    <dimen name="gravity">1.5dp</dimen>
+    <dimen name="tap_boost">-18dp</dimen>
+
+    <dimen name="background_top_height">15dp</dimen>
+    <dimen name="background_bottom_height">20dp</dimen>
+
+    <dimen name="obstacle_width">100dp</dimen>
+    <dimen name="obstacle_height">200dp</dimen>
+
+    <dimen name="obstacle_separation">275dp</dimen>
+    <dimen name="obstacle_speed">5dp</dimen>
+
+    <dimen name="head_height">30dp</dimen>
+    <dimen name="head_extra_width">20dp</dimen>
+
+    <dimen name="obstacle_min_position">100dp</dimen>
+    <dimen name="obstacle_interval">350dp</dimen>
+
+</resources>
+
+
+
