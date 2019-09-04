@@ -25,6 +25,8 @@ class Obstacle(resources: Resources, screenHeight : Int,screenWidth : Int, callb
     private val headExtraWidth = resources.getDimension(R.dimen.head_extra_width).toInt()
     private var height = (Random.nextInt((screenHeight - 2 * obstacleMiPosition - separation).toInt()) + obstacleMiPosition + 100).toInt()
 
+    public var speedChange = Random.nextInt(3) + 1
+
     //private var i = 0
     private val callback = callback
 
@@ -47,9 +49,20 @@ class Obstacle(resources: Resources, screenHeight : Int,screenWidth : Int, callb
     }
 
     override fun update() {
-        xPosition -= speed
+        xPosition -= speed * speedChange
+        //画面外にいったら削除
         if( xPosition <= 0 - width - 2*headExtraWidth) {
             callback.removeObstacle(this)
+        }else{
+
+            var positions = ArrayList<Rect>()
+            val bottomPosition = Rect(xPosition, screenHeight - height - headHeight, xPosition + width + 2*headExtraWidth, screenHeight)
+            val topPosition = Rect(xPosition, 0, xPosition + width + 2*headExtraWidth, screenHeight - height - headHeight - separation)
+
+            positions.add(bottomPosition)
+            positions.add(topPosition)
+
+            callback.updatePosition(this,positions)
         }
     }
 }
