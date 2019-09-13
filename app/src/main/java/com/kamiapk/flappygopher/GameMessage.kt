@@ -10,11 +10,13 @@ class GameMessage(resources: Resources, screenHeight : Int, screenWidth : Int) :
     private val screenHeight = screenHeight
     private val screeningWidth = screenWidth
 
-    private var titleScreen = BitmapFactory.decodeResource(resources,R.drawable.message)
+    private val titleScreen = BitmapFactory.decodeResource(resources,R.drawable.message)
+    private val gopher = BitmapFactory.decodeResource(resources,R.drawable.gopher)
 
 
     override fun draw(canvas: Canvas) {
-        canvas.drawBitmap(titleScreen,(screeningWidth / 2 - titleScreen.width / 2).toFloat() , (screenHeight / 4).toFloat(), null )
+        canvas.drawBitmap(gopher,(screeningWidth - gopher.width).toFloat(),(screenHeight / 2).toFloat(),null)
+        canvas.drawBitmap(titleScreen,(screeningWidth / 2 - titleScreen.width / 2).toFloat() , (screenHeight / 4).toFloat(), null)
     }
 
     override fun update() {

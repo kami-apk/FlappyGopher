@@ -81,7 +81,7 @@ class Gopher(resources : Resources, screenHeight : Int, callback : GameManagerCa
             }
         }else {
             gopherY += verocity
-            verocity += gravity * 0.1F
+            verocity += gravity * 0.15F
             val gopherPosition = Rect(gopherX.toInt(), gopherY.toInt(),(gopherX + gopherWidth).toInt(), (gopherY + gopherHeight).toInt() )
             callback.upDatePosition(gopherPosition)
         }
@@ -91,7 +91,7 @@ class Gopher(resources : Resources, screenHeight : Int, callback : GameManagerCa
     fun onTouchEvent(){
         if(!collision){
             gopherY += tapBoost
-            verocity = -10F
+            verocity = -15F
         }
     }
 

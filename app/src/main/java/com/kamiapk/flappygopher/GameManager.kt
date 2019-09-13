@@ -5,21 +5,11 @@ import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import com.kamiapk.flappygopher.gopher.Gopher
-import com.kamiapk.flappygopher.gopher.Obstacle
-import com.kamiapk.flappygopher.gopher.ObstaclesManager
-import android.R.attr.top
-import android.R.attr.left
-import android.R.attr.right
-import android.R.attr.bottom
-import android.R.attr.top
-import android.R.attr.left
-import android.R.attr.right
-import android.R.attr.bottom
-import com.kamiapk.flappygopher.gopher.GameOver
+import com.kamiapk.flappygopher.gopher.*
 
 
 /*
@@ -29,27 +19,13 @@ import com.kamiapk.flappygopher.gopher.GameOver
 class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(context) , SurfaceHolder.Callback, GameManagerCallback{
 
 
-    //画面の幅を取得
-    private  var screenHeight : Int
-    private  var screenWidth : Int
-    init{
-        screenHeight = getScreenHeight()
-        screenWidth = getScreenWidth()
-        //getHolderとaddCallbackを結びつける
-        holder.addCallback(this)
-        //ゲーム開始
-        initGame()
-    }
-
-
-
     /*
-    遅延初期化
-     */
+        遅延初期化
+    */
     //Gopherのインスタンス取得!
     private  lateinit var gopher : Gopher
     //Backgroundのインスタンス取得
-    private lateinit var background : Background
+    private lateinit var  background : Background
     //障害物のインスタンス取得
     private lateinit var obstaclesManager : ObstaclesManager
     //GameOver
@@ -59,6 +35,10 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
     private lateinit var obstaclePositions :HashMap<Obstacle, List<Rect>>
     //title
     private lateinit var title : GameMessage
+    //scoreインスタンス
+    private lateinit var score : Score
+    private var gameScore = 0
+
 
     //GameState
     private var gameState = GameState.INITIAL
@@ -68,6 +48,19 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
 
 
 
+    //画面の幅を取得
+    private  var screenHeight : Int
+    private  var screenWidth : Int
+
+    init{
+        screenHeight = getScreenHeight()
+        screenWidth = getScreenWidth()
+        //getHolderとaddCallbackを結びつける
+        holder.addCallback(this)
+        //ゲーム開始
+        this.background = Background(resources,screenHeight, screenWidth)
+        initGame()
+    }
 
     //ゲームオーバー　→　ゲームスタート　において初期化が必要のため
     fun initGame() {
@@ -75,8 +68,7 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
         title = GameMessage(resources,screenHeight, screenWidth)
         //Gopherのインスタンス取得!
         gopher = Gopher(resources,screenHeight,this)
-        //Backgroundのインスタンス取得
-        background = Background(resources, screenHeight)
+
         //障害物のインスタンス取得
         obstaclesManager = ObstaclesManager(resources, screenHeight, screenWidth ,this)
         //GameOver
@@ -84,6 +76,8 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
         //描写ではなく当たり判定用
         gopherPosition= Rect()
         obstaclePositions = HashMap<Obstacle, List<Rect>>()
+        score = Score(resources,screenHeight, screenWidth)
+        gameScore = 0
 
     }
 
@@ -93,7 +87,6 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
         if(thread.state == Thread.State.TERMINATED){
             thread = MainThread( holder, this)
         }
-
         thread.setRunning(true)
         thread.start()
     }
@@ -103,7 +96,7 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
     }
 
     override fun surfaceDestroyed(p0: SurfaceHolder?) {
-        var retry : Boolean = true
+        var retry = true
         while(retry){
             try{
                 thread.setRunning(false)
@@ -117,7 +110,7 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
 
     //Gopherクラスを利用してUIの変更
     fun update(){
-
+        background.update()
         //GameState の　状態により行動を変化させる
         when (gameState){
             GameState.PLAYING -> {
@@ -130,6 +123,9 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
             GameState.GAME_OVER -> {
                 gopher.update()
             }
+            else -> {
+
+            }
         }
 
     }
@@ -137,33 +133,32 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
     //画面描写処理
     override fun draw(canvas: Canvas){
         super.draw(canvas)
-        if ( canvas != null){
-            canvas.drawRGB(150,255,255)
-            background.draw(canvas)
-            when ( gameState ) {
 
-                GameState.PLAYING -> {
-                    //画面にgopher君を呼び出すだけ
-                    //動作を付けるのはgopher.update()
-                    gopher.draw(canvas)
-                    obstaclesManager.draw(canvas)
-                    checkCollision()
-                }
+        background.draw(canvas)
 
-                GameState.GAME_OVER -> {
-                    gopher.draw(canvas)
-                    obstaclesManager.draw(canvas)
-                    gameOver.draw(canvas)
-                }
-                GameState.INITIAL -> {
-                    gopher.draw(canvas)
-                    title.draw(canvas)
-                }
+        when ( gameState ) {
 
+            GameState.PLAYING -> {
+                //画面にgopher君を呼び出すだけ
+                //動作を付けるのはgopher.update()
+                gopher.draw(canvas)
+                obstaclesManager.draw(canvas)
+                score.draw(canvas)
+                checkCollision()
+            }
+
+            GameState.GAME_OVER -> {
+                gopher.draw(canvas)
+                obstaclesManager.draw(canvas)
+                score.draw(canvas)
+                gameOver.draw(canvas)
+            }
+            GameState.INITIAL -> {
+                gopher.draw(canvas)
+                title.draw(canvas)
             }
 
         }
-
     }
 
     //画面がタッチされた時のイベント
@@ -175,7 +170,6 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
             }
             GameState.INITIAL -> {
                 gameState = GameState.PLAYING
-
             }
             GameState.GAME_OVER -> {
                 initGame()
@@ -190,11 +184,11 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
     }
 
     //画面の高さ・幅を取得
-    fun getScreenHeight() : Int {
+    private fun getScreenHeight() : Int {
         val dm = Resources.getSystem().displayMetrics
         return dm.heightPixels
     }
-    fun getScreenWidth() : Int {
+    private fun getScreenWidth() : Int {
         val dm = Resources.getSystem().displayMetrics
         return dm.widthPixels
     }
@@ -216,10 +210,12 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
 
     override fun removeObstacle(obstacle: Obstacle) {
         obstaclePositions.remove(obstacle)
+        gameScore++
+        score.updateScore(gameScore)
     }
 
     //衝突に対する制御
-    fun checkCollision(){
+    private fun checkCollision(){
         var collision = false
 
         if(gopherPosition.bottom > screenHeight ){
@@ -245,8 +241,10 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
         }
 
         if(collision){
+            //各種クラスのcollisionフラグをtrueにする
             gameState = GameState.GAME_OVER
             gopher.collision()
+            score.collision(context.getSharedPreferences("GET",Context.MODE_PRIVATE))
         }
 
 

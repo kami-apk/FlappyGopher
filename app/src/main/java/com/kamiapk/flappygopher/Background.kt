@@ -4,37 +4,82 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.util.Log
+import com.kamiapk.flappygopher.gopher.BackgroundState
 import com.kamiapk.flappygopher.gopher.DisplayObject
 
 
 
 
-class Background(resources : Resources, screenHeight : Int) : DisplayObject {
+class Background(resources : Resources, screenHeight : Int, private val screenWidth: Int) : DisplayObject {
 
-    //画面の高さ(y軸の長さ)
-    private val screenHeight = screenHeight.toFloat()
+    //初期状態
+    private var backgroundState = BackgroundState.FIRST
+
+    //画像の位置
+    private var firstPosition : Int = 0
+    private var secondPosition : Int  = screenWidth
 
     //画像リソースからビットマップとして呼び出す
-    private val background_top : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.mmm)
-    private val background_bottom : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.mmm)
-    //端末に依存した長さを取り出す
-    private val topHeight : Int = resources.getDimension(R.dimen.background_top_height).toInt()
-    private val bottomHeight : Int = resources.getDimension(R.dimen.background_bottom_height).toInt()
+    private val backgroundBitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.ahoy)
+
     //端末に合わせてBitmapの大きさを変える
-    private val top = Bitmap.createScaledBitmap(background_top, background_top.width, topHeight,false)
-    private val bottom = Bitmap.createScaledBitmap(background_bottom, background_bottom.width, bottomHeight, false)
+    private val bgbFirst = Bitmap.createScaledBitmap(backgroundBitmap,backgroundBitmap.width, screenHeight, false)
+    private val bgbSecond = Bitmap.createScaledBitmap(backgroundBitmap,backgroundBitmap.width, screenHeight, false)
+
 
     //backgroundにBitmapを表示させる
     override fun draw(canvas: Canvas) {
-        canvas.drawBitmap(top,0F,0F,null)
-        canvas.drawBitmap(bottom,0F,screenHeight - bottom.height,null)
-        //タブレット用の表示
-        canvas.drawBitmap(top,top.width.toFloat(),0F,null)
-        canvas.drawBitmap(bottom,bottom.width.toFloat(),screenHeight - bottom.height,null)
+        canvas.drawBitmap(bgbFirst,firstPosition.toFloat(),0F,null)
+        canvas.drawBitmap(bgbSecond,secondPosition.toFloat(),0F,null)
     }
 
+    //画面描写のロジック
     override fun update() {
+        when ( backgroundState ) {
+
+            BackgroundState.FIRST -> {
+                firstPosition--
+                if( -firstPosition + screenWidth == bgbFirst.width){
+                    secondPosition--
+                    backgroundState = BackgroundState.BOTH
+                }
+            }
+
+            BackgroundState.BOTH -> {
+                firstPosition--
+                secondPosition--
+                if( -firstPosition == bgbFirst.width){
+                    firstPosition = screenWidth
+                    backgroundState = BackgroundState.SECOND
+                }
+
+            }
+
+            BackgroundState.SECOND -> {
+                secondPosition--
+                if (-secondPosition + screenWidth == bgbFirst.width){
+                    firstPosition--
+                    backgroundState = BackgroundState.LAST
+                }
+            }
+
+            BackgroundState.LAST -> {
+                firstPosition--
+                secondPosition--
+                if( -secondPosition == bgbFirst.width){
+                    secondPosition = screenWidth
+                    backgroundState = BackgroundState.FIRST
+                }
+
+
+            }
+
+
+        }
+
 
     }
 
 }
+

@@ -1,4 +1,4 @@
-package com.kamiapk.flappygopher
+package com.kamiapk.flappygopher.gopher
 
 
 enum class GameState {
