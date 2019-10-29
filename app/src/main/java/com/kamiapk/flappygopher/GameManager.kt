@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Rect
+import android.media.SoundPool
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -41,6 +42,9 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
     //scoreインスタンス
     private lateinit var score : Score
     private var gameScore = 0
+
+    private lateinit var sound : SoundManager
+
 
 
     //GameState
@@ -81,7 +85,7 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
         obstaclePositions = HashMap<Obstacle, List<Rect>>()
         score = Score(resources,screenHeight, screenWidth)
         gameScore = 0
-
+        SoundManager.getInstance(context)
     }
 
 
@@ -171,6 +175,7 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
             GameState.PLAYING -> {
                 //上昇させる
                 gopher.onTouchEvent()
+                SoundManager.getInstance(context).playSound(SoundManager.SOUND_WING)
             }
             GameState.INITIAL -> {
                 gameState = GameState.PLAYING
@@ -215,6 +220,7 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
     }
 
     override fun removeObstacle(obstacle: Obstacle) {
+        SoundManager.getInstance(context).playSound(SoundManager.SFX_POINT)
         obstaclePositions.remove(obstacle)
         gameScore++
         score.updateScore(gameScore)
@@ -247,10 +253,12 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
 
         if(collision){
             //各種クラスのcollisionフラグをtrueにする
+            stopScreenTap = 0
             gameState = GameState.GAME_OVER
             gopher.collision()
             score.collision(context.getSharedPreferences("GET",Context.MODE_PRIVATE))
-            stopScreenTap = 0L
+            SoundManager.getInstance(context).playSound(SoundManager.SFX_DIE)
+            SoundManager.getInstance(context).playSound(SoundManager.SFX_HIT)
         }
 
 
