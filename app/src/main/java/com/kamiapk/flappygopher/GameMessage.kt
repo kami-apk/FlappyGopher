@@ -19,12 +19,9 @@ class GameMessage(resources: Resources, screenHeight : Int, screenWidth : Int) :
         canvas.drawBitmap(titleScreen,(screeningWidth / 2 - titleScreen.width / 2).toFloat() , (screenHeight / 4).toFloat(), null)
     }
 
+    //TODO:
     override fun update() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
-
-
 
 
 }

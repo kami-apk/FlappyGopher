@@ -9,7 +9,10 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import android.view.View
+import androidx.core.view.isVisible
 import com.kamiapk.flappygopher.gopher.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 
 /*
@@ -46,11 +49,11 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
     //MainThreadのインスタンスを取得
     private var thread = MainThread( holder, this)
 
-
-
     //画面の幅を取得
     private  var screenHeight : Int
     private  var screenWidth : Int
+
+    var stopScreenTap = 0L
 
     init{
         screenHeight = getScreenHeight()
@@ -110,6 +113,7 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
 
     //Gopherクラスを利用してUIの変更
     fun update(){
+        stopScreenTap++
         background.update()
         //GameState の　状態により行動を変化させる
         when (gameState){
@@ -172,10 +176,12 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
                 gameState = GameState.PLAYING
             }
             GameState.GAME_OVER -> {
-                initGame()
-                gopher.gopherY = (screenHeight / 2 ).toFloat()
-                gopher.collision = false
-                gameState = GameState.INITIAL
+                if(stopScreenTap >= 30){
+                    initGame()
+                    gopher.gopherY = (screenHeight / 2 ).toFloat()
+                    gopher.collision = false
+                    gameState = GameState.INITIAL
+                }
             }
 
         }
@@ -217,7 +223,6 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
     //衝突に対する制御
     private fun checkCollision(){
         var collision = false
-
         if(gopherPosition.bottom > screenHeight ){
             collision = true
         }else{
@@ -245,6 +250,7 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
             gameState = GameState.GAME_OVER
             gopher.collision()
             score.collision(context.getSharedPreferences("GET",Context.MODE_PRIVATE))
+            stopScreenTap = 0L
         }
 
 

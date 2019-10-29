@@ -24,6 +24,7 @@ class Background(resources : Resources, screenHeight : Int, private val screenWi
     private val backgroundBitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.ahoy)
 
     //端末に合わせてBitmapの大きさを変える
+    //二枚あるのはシームレス描写に対応するため。
     private val bgbFirst = Bitmap.createScaledBitmap(backgroundBitmap,backgroundBitmap.width, screenHeight, false)
     private val bgbSecond = Bitmap.createScaledBitmap(backgroundBitmap,backgroundBitmap.width, screenHeight, false)
 

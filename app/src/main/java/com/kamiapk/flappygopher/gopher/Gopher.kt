@@ -73,8 +73,12 @@ class Gopher(resources : Resources, screenHeight : Int, callback : GameManagerCa
 
 
     }
+
     override fun update() {
         if(collision){
+            if(verocity<=0){
+                verocity = 0F
+            }
             if(gopherY + gopher_red.height < screenHeight){
                 gopherY += verocity
                 verocity += gravity * 0.1F
