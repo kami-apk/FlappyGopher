@@ -91,28 +91,19 @@ class Score(resources: Resources, private val screenHeight: Int, private val scr
                 null
             )
 
-            //得点
+            //ベストスコアの表示
             for (i in 0 until topDigits.size) {
-                val x = (3 * screenWidth / 4 - topDigits.size * zero.width + zero.width * i).toFloat()
+                val x = (3 * screenWidth / 4 - topDigits.size * zero.width / 2 + zero.width * i).toFloat()
                 canvas.drawBitmap(topDigits[i], x, (3 * screenHeight / 4).toFloat(), null)
             }
-
+            //今回のゲームスコアの表示
             for (i in 0 until currentDigits.size) {
-                val x = (screenWidth / 4 - currentDigits.size * zero.width + zero.width * i).toFloat()
+                val x = (screenWidth / 4 - currentDigits.size * zero.width / 2 + zero.width * i).toFloat()
                 canvas.drawBitmap(currentDigits[i], x, (3 * screenHeight / 4).toFloat(), null)
             }
 
-
-
-
-
         }
     }
-
-
-
-
-
 
 
     //scoreを受け取って表示させるBitmapを作成する

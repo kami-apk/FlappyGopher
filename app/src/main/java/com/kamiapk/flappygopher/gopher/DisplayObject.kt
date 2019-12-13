@@ -2,7 +2,7 @@ package com.kamiapk.flappygopher.gopher
 
 import android.graphics.Canvas
 
-//gopher.ktのインターフェイスとして用意
+//画面に表示するオブジェクトのインターフェイスとして用意
 interface DisplayObject {
 
     fun draw(canvas : Canvas)

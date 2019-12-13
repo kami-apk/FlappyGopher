@@ -86,6 +86,7 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
         score = Score(resources,screenHeight, screenWidth)
         gameScore = 0
         SoundManager.getInstance(context)
+        stopScreenTap = 0
     }
 
 
@@ -178,19 +179,20 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
                 SoundManager.getInstance(context).playSound(SoundManager.SOUND_WING)
             }
             GameState.INITIAL -> {
-                gameState = GameState.PLAYING
+                //連続タップで画面遷移がすぐに起きるのを防ぐ
+                if(stopScreenTap >= 20) {  //0.33秒以上
+                    gameState = GameState.PLAYING
+                }
             }
             GameState.GAME_OVER -> {
-                if(stopScreenTap >= 30){
+                if(stopScreenTap >= 30){ //0.5秒以上
                     initGame()
                     gopher.gopherY = (screenHeight / 2 ).toFloat()
                     gopher.collision = false
                     gameState = GameState.INITIAL
                 }
             }
-
         }
-
         return super.onTouchEvent(event)
     }
 
@@ -252,8 +254,9 @@ class GameManager(context : Context, attributeSet : AttributeSet) : SurfaceView(
         }
 
         if(collision){
-            //各種クラスのcollisionフラグをtrueにする
+            //連続画面遷移を防止するため
             stopScreenTap = 0
+            //各種クラスのcollisionフラグをtrueにする
             gameState = GameState.GAME_OVER
             gopher.collision()
             score.collision(context.getSharedPreferences("GET",Context.MODE_PRIVATE))

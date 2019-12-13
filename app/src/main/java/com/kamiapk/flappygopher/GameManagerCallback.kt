@@ -9,6 +9,5 @@ interface GameManagerCallback {
     fun upDatePosition(obstacle : Obstacle, positions : ArrayList<Rect>)
     fun removeObstacle(obstacle : Obstacle)
 
-
 }
 

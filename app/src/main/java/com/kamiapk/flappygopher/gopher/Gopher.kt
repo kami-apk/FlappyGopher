@@ -54,7 +54,6 @@ class Gopher(resources : Resources, screenHeight : Int, callback : GameManagerCa
         if(collision){
             canvas.drawBitmap(gopher_end, gopherX, gopherY, null)
         }else{
-
             if(i in 0..10){
                 canvas.drawBitmap(gopher_red, gopherX, gopherY, null)
                 i++
@@ -68,10 +67,7 @@ class Gopher(resources : Resources, screenHeight : Int, callback : GameManagerCa
                     i = 0
                 }
             }
-
         }
-
-
     }
 
     override fun update() {

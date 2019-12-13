@@ -80,7 +80,7 @@ class SoundManager constructor(context: Context) {
     }
 
 
-    fun close() { // シングルトンの場合呼びようがない？
+    fun close() {
         soundPool?.release()
         soundPool = null
     }
