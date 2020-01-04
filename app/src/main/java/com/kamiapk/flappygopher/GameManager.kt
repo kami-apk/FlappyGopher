@@ -4,17 +4,11 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.media.SoundPool
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import android.view.View
-import androidx.core.view.isVisible
 import com.kamiapk.flappygopher.gopher.*
-import kotlinx.android.synthetic.main.activity_main.view.*
-
 
 /*
     スクリーン上の要素を制御するクラス
